@@ -1,7 +1,8 @@
 import datetime
 import uuid
-from models.generators.hash_generator import generate_login_hash
+from models.generators import generate_login_hash, AESCipher
 from models import store
+from models.store import Vault
 
 """module: user
 Used to initiate a user and his profile details
@@ -37,6 +38,12 @@ class User:
 
             if kwargs.get('master_pass'):
                 self.hash_pw = generate_login_hash(kwargs.get('master_pass'))
+
+            if not kwargs.get['user_id']:
+                self.user_id = str(uuid.uuid4())
+            # activate personal vault
+            self.vault = Vault(self.user_id, kwargs.get('master_pass'))
+            self.vault.load_vault()
         else:
             self.name = '--NO NAME--'
             self.user_id = str(uuid.uuid4())
@@ -44,6 +51,8 @@ class User:
             self.date_updated = self.date_joined
             import random
             self.hash_pw = generate_login_hash(str(random.randint(0, 10)))
+            self.vault = Vault(self.user_id)
+            self.vault.load_vault()
 
     def add(self):
         self.date_updated = datetime.datetime.utcnow()
@@ -57,4 +66,5 @@ class User:
         dictionary['date_joined'] = self.date_joined.strftime(d_time)
         dictionary['date_updated'] = self.date_updated.strftime(d_time)
         dictionary['__class__'] = self.__class__.__name__
+        del dictionary['vault']
         return dictionary

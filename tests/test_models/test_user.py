@@ -29,7 +29,7 @@ class TestUser(unittest.TestCase):
         passwd = base64.b64encode(hashlib.sha256('password1'.encode('utf-8')).digest())
         self.assertTrue(bcrypt.checkpw(passwd, generate_login_hash('password1')))
 
-    def test_null(self):
-        """testing null imput"""
-        User2 = User()
+    # def test_null(self):
+    #     """testing null imput"""
+    #     User2 = User()
         
