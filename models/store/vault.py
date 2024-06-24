@@ -1,4 +1,4 @@
-from models.generators import generate_login_hash, AESCipher
+from models.generators import generate_login_hash, AESCipher, password_generator
 """module: models/platforms
 will generate user platforms and their crypted passwords
 """
@@ -23,6 +23,10 @@ class Vault:
         hashed_password = self.aes.encrypt(password)
         self.__platforms[platform_name] = hashed_password
 
+    def generate_password(self, platform):
+        """used to generate a strong 10 char password for a platform"""
+        self.__platforms[platform] = self.aes.encrypt(password_generator())
+
     def load_vault(self):
         try:
             with open(self.file, 'r', encoding='utf-8') as file:
@@ -37,12 +41,12 @@ class Vault:
     def decrypt(self):
         """decrypt platforms and send back a decrypted"""
         decrypted = {}
-        for platform, password in self.__platforms:
+        for platform, password in self.__platforms.items():
             decrypted[platform] = self.aes.decrypt(password)
 
         return decrypted
 
-    def save_platform(self):
+    def save_platforms(self):
         """saves the encryped platforms"""
         save_dict = self.__platforms.copy()
         try:

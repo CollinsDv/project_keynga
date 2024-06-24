@@ -1,4 +1,4 @@
-from models.store.file_unit import FileUnit
+from models.store.user_storage import UserStore
 
-store = FileUnit()
-store.load()
+user_store = UserStore()
+user_store.load()

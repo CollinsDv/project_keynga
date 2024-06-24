@@ -1,0 +1,5 @@
+python3
+hashlib
+pycrypto
+bcrypt
+pip install --upgrade pycryptodome
