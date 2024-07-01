@@ -2,13 +2,15 @@ import unittest
 import os
 import json
 from models.store.vault import Vault
+import bcrypt
 
 class TestVault(unittest.TestCase):
 
     def setUp(self):
         self.user_id = 'test_user'
         self.master_pass = 'test_pass'
-        self.vault = Vault(self.user_id, self.master_pass)
+        self.salt = str(bcrypt.gensalt())
+        self.vault = Vault(self.user_id, self.master_pass, self.salt)
         self.platform_name = 'test_platform'
         self.password = 'test_password'
 
@@ -19,7 +21,7 @@ class TestVault(unittest.TestCase):
 
     def test_initialization(self):
         self.assertEqual(self.vault.user_id, self.user_id)
-        self.assertEqual(self.vault.aes.key, Vault(self.user_id, self.master_pass).aes.key)
+        self.assertEqual(self.vault.aes.key, Vault(self.user_id, self.master_pass, self.salt).aes.key)
         self.assertEqual(self.vault.get_vault(), {})
 
     def test_add_platform(self):
@@ -41,7 +43,7 @@ class TestVault(unittest.TestCase):
     def test_load_vault(self):
         self.vault.add_platform(self.platform_name, self.password)
         self.vault.save_platforms()
-        new_vault = Vault(self.user_id, self.master_pass)
+        new_vault = Vault(self.user_id, self.master_pass, self.salt)
         new_vault.load_vault()
         self.assertEqual(new_vault.get_vault(), self.vault.get_vault())
 

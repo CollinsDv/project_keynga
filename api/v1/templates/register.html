@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='register.css') }}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <h1 class="title">SIGN UP</h1>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            <form method="POST" action="{{ url_for('register') }}">
+                {{ form.hidden_tag() }}
+                <div class="input-container">
+                    {{ form.username(class_="form-input", placeholder="Username") }}
+                    <!-- {% for error in form.username.errors %}
+                        <span class="error">[{{ error }}]</span>
+                    {% endfor %} -->
+                </div>
+                <div class="input-container">
+                    {{ form.master_password(class_="form-input", placeholder="Master Password") }}
+                    <!-- {% for error in form.master_password.errors %}
+                        <span class="error">[{{ error }}]</span>
+                    {% endfor %} -->
+                </div>
+                <div class="input-container">
+                    {{ form.confirm(class_="form-input", placeholder="Confirm Password") }}
+                    <!-- {% for error in form.confirm.errors %}
+                        <span class="error">[{{ error }}]</span>
+                    {% endfor %} -->
+                </div>
+                <button type="submit" class="submit-btn">Register</button>
+            </form>
+            <a href="{{ url_for('login') }}">Already have an account? Log In</a>
+        </div>
+    </div>
+    <!-- Bootstrap JS, Popper.js, and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

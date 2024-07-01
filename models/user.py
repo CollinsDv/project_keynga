@@ -1,8 +1,9 @@
 import datetime
 import uuid
-from models.generators import generate_login_hash
+from models.generators import generate_login_hash, password_generator
 from models import user_store
 from models.store.vault import Vault
+import bcrypt
 
 """module: user
 Used to initiate a user and his profile details
@@ -44,17 +45,22 @@ class User:
             if not kwargs.get('user_id'):
                 self.user_id = str(uuid.uuid4())
             # activate personal vault
-            self.vault = Vault(self.user_id, kwargs.get('master_pass'))
+            if not kwargs.get('salt'):
+                self.salt = str(bcrypt.gensalt())
+            self.vault = Vault(self.user_id, kwargs.get('master_pass'), self.salt)
             self.vault.load_vault()
+            # delete password after use
+            del kwargs['master_pass']
+            del self.master_pass
         else:
             self.name = '--NO NAME--'
             self.user_id = str(uuid.uuid4())
             self.date_joined = datetime.datetime.utcnow()
             self.date_updated = self.date_joined
-            import random
-            self.master_pass = str(random.randint(0, 10))
+            self.master_pass = password_generator()
             self.hash_pw = generate_login_hash(self.master_pass)
-            self.vault = Vault(self.user_id, self.master_pass)
+            self.salt = str(bcrypt.gensalt())
+            self.vault = Vault(self.user_id, self.master_pass, self.salt)
             self.vault.load_vault()
 
     def add(self):

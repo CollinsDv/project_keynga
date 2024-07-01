@@ -95,6 +95,7 @@ class TestStore(unittest.TestCase):
         new_user2_dict['master_pass'] = self.user2_dict['master_pass']
         new_user2_dict.pop('hash_pw')  # Remove the hash_pw for comparison
 
+
         self.assertIsNot(self.user2, User(**new_user2_dict))
         self.assertDictEqual({k: v for k, v in self.user2.obj_dict().items() if k != 'hash_pw'},
                              {k: v for k, v in User(**new_user2_dict).obj_dict().items() if k != 'hash_pw'},

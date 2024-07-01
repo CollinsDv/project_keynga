@@ -11,12 +11,12 @@ class Vault:
     # __platforms = {}
     # file = ''
 
-    def __init__(self, user_id, master_pass):
+    def __init__(self, user_id, master_pass, salt):
         """initializing a users platform using his user id"""
         self.user_id = user_id
         self.__platforms = {}  # Format: {'platform_name': 'encrypted_password'}
         self.file = f'{user_id}.json'
-        self.aes = AESCipher(master_pass)
+        self.aes = AESCipher(master_pass, salt)
 
     def add_platform(self, platform_name, password):
         """Add a platform and password for the user."""
@@ -57,8 +57,19 @@ class Vault:
 
     def delete_platform(self, platform_name):
         """deletes a users platform"""
-        del self.__platforms[platform_name]
-        
+        self.__platforms = {}
+
+    def delete_all_platforms(self):
+        """deletes all platforms"""
+        self.__platforms = {}
+    
+    def number_of_platforms(self):
+        """gets the number of platforms managed"""
+        return len(self.__platforms)
+    
+    def get_platforms(self):
+        """returns the list of platforms"""
+        return self.__platforms
 
     # def verify_access(self, platform_name, password):
     #     """Verify if the user has access to the given platform."""

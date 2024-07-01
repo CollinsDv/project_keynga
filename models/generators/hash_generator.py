@@ -25,6 +25,11 @@ def generate_login_hash(password):
 
     return hashed
 
+def verify_password(user_pass, hash):
+    """used to verify a user on login"""
+    encoded = base64.b64encode(hashlib.sha256(user_pass.encode()).digest())
+    return bcrypt.checkpw(encoded, hash.encode())
+
 
 if __name__ == '__main__':
     user_pass = True

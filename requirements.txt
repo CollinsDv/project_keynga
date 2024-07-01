@@ -3,3 +3,4 @@ hashlib
 pycrypto
 bcrypt
 pip install --upgrade pycryptodome
+Flask-WTF
