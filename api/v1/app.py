@@ -16,19 +16,19 @@ app.config['SECRET_KEY'] = 'createatokenusingsecretpackage'
 @app.route('/register/', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
-    if form.validate_on_submit() and request.method == 'POST' and \
-        form.validate_username(form.username):
+    if form.validate_on_submit():  # Simplified condition check
         try:
-            user = User(name=form.username.data, master_pass=form.master_password.data)
-            user.add()
-            user_store.save()
-            flash('Registered Successfully', 'success')
-            user_store.save()
-            return redirect(url_for('login'))
-        except ValidationError as e:
+            if form.validate_username(form.username):
+                user = User(name=form.username.data, master_pass=form.master_password.data)
+                user_store.load()
+                user.add()
+                user_store.save()
+                flash('Registered Successfully', 'success')
+                return redirect(url_for('login'))
+        except ValidationError as e:  # Included try-except block for ValidationError
             flash(str(e), 'danger')
     else:
-        for fieldName, errorMessages in form.errors.items():
+        for fieldName, errorMessages in form.errors.items():  # Flashing field-specific errors
             for err in errorMessages:
                 flash(err, 'danger')
     return render_template('register.html', form=form)
@@ -42,23 +42,22 @@ def login():
                 session.pop('user', None)
                 session['user'] = form.username.data
                 flash('Login Successful', 'success')
-                return redirect(url_for('index'))
+                return redirect(url_for('home'))
             else:
                 flash('Invalid username or password', 'danger')  # Generic error message
         except Exception as e:  # Catch a more generic exception if unsure
             flash(str(e), 'danger')
     return render_template('login.html', form=form)
 
-@app.route('/')
-def index():
+@app.route('/home')
+def home():
     if g.user:
-        return render_template('index.html', user=session['user'])
+        return render_template('home.html', user=session['user'])
     return render_template(url_for('login'))
 
 @app.route('/dropsession')
 def dropsession():
     """drops a user session and logs out"""
-    user_store.save() # save users
     session.pop('user', None)  # Log out the user
     session.pop('_flashes', None)  # Clear all flashed messages
     return redirect(url_for('login'))
