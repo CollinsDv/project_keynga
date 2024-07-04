@@ -10,13 +10,12 @@ Used to initiate a user and his profile details
 """
 d_time = "%m/%d/%y %H:%M:%S"
 
-
 class User:
     """generate a user"""
     def __init__(self, *args, **kwargs):
         """initialization of the user object
         Args:
-            args (tuple): sigle indexed elements
+            args (tuple): single indexed elements
             kwargs (dict): keyword elements
 
         Return:
@@ -78,3 +77,19 @@ class User:
         dictionary['__class__'] = self.__class__.__name__
         del dictionary['vault']
         return dictionary
+
+    # Methods required by Flask-Login
+    @property
+    def is_authenticated(self):
+        return True
+
+    @property
+    def is_active(self):
+        return True
+
+    @property
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return str(self.user_id)

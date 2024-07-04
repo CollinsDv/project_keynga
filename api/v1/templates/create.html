@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Create{% endblock %}
+
+{% block content %}
+<div class="create-section pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Create</h1>
+</div>
+<div class="content">
+    <h3>Add Platforms</h3>
+    <form id="addPlatformForm" method="POST" action="{{ url_for('create') }}">
+        {{ form.hidden_tag() }}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Platform</th>
+                    <th>Username</th>
+                    <th>New Password</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ form.platform_name(class_="form-control") }}</td>
+                    <td>{{ form.username(class_="form-control") }}</td>
+                    <td>{{ form.password(class_="form-control") }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    <h3 class="mt-5">Generate Password</h3>
+    <form id="generatePasswordForm" method="POST" action="{{ url_for('generate_password') }}">
+        {{ gen_form.hidden_tag() }}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Platform</th>
+                    <th>Username</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ gen_form.platform_name(class_="form-control") }}</td>
+                    <td>{{ gen_form.username(class_="form-control") }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <button type="submit" class="btn btn-primary">Generate Password</button>
+    </form>
+</div>
+
+<!-- Clear forms after submission -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var addPlatformForm = document.getElementById("addPlatformForm");
+        var generatePasswordForm = document.getElementById("generatePasswordForm");
+
+        addPlatformForm.addEventListener("submit", function(event) {
+            setTimeout(function() {
+                addPlatformForm.reset();
+            }, 100);
+        });
+
+        generatePasswordForm.addEventListener("submit", function(event) {
+            setTimeout(function() {
+                generatePasswordForm.reset();
+            }, 100);
+        });
+    });
+</script>
+{% endblock %}

@@ -13,16 +13,30 @@ class LoginForm(FlaskForm):
     def validate_user(self, form):
         """checks if a user password matches the hash
         Args:
-            Form (flaskform) - contains entries from client userform
+            form (FlaskForm): contains entries from client userform
         Return:
-            bool - True if password matches, else false
+            User object if password matches, else None
         """
         try:
             with open(user_store.file_store, 'r') as file:
                 users = json.load(file)
         except FileNotFoundError:
-            return False
+            print("User store file not found")
+            return None
         else:
             for user in users.values():
                 if user['name'] == form.username.data:
-                    return verify_password(form.master_password.data, user['hash_pw'])
+                    print(f"User found: {user['name']}")
+                    if verify_password(form.master_password.data, user['hash_pw']):
+                        print("Password is correct")
+                        user_key = f"{user['name']}:{user['user_id']}"
+                        print(f"User key: {user_key}")
+                        if user_key in user_store.get_users():
+                            return user_store.get_users()[user_key]
+                        else:
+                            print(f"User key {user_key} not found in user store.")
+                            return None
+                    else:
+                        print("Password is incorrect")
+        print("User not found or password incorrect")
+        return None

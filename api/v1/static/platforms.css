@@ -1,0 +1,32 @@
+/* Add this to your create.css or a new file platforms.css */
+.table {
+    width: 100%;
+    margin: 20px 0;
+    border-collapse: collapse;
+}
+
+.table th, .table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.password {
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.btn-outline-secondary {
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #e2e6ea;
+}

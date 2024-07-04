@@ -1,7 +1,7 @@
-from models.generators import generate_login_hash, AESCipher, password_generator
 """module: models/platforms
 will generate user platforms and their crypted passwords
 """
+from models.generators import generate_login_hash, AESCipher, password_generator
 import json
 
 
@@ -18,14 +18,18 @@ class Vault:
         self.file = f'{user_id}.json'
         self.aes = AESCipher(master_pass, salt)
 
-    def add_platform(self, platform_name, password):
+    def add_platform(self, platform_name, username, password):
         """Add a platform and password for the user."""
         hashed_password = self.aes.encrypt(password)
-        self.__platforms[platform_name] = hashed_password
+        key = platform_name + '-' + username
+        if self.__platforms.get(key, None):
+            del self.__platforms[key]
+        self.__platforms[key] = hashed_password
 
-    def generate_password(self, platform):
+    def generate_password(self, platform_name, username):
         """used to generate a strong 10 char password for a platform"""
-        self.__platforms[platform] = self.aes.encrypt(password_generator())
+        key = platform_name + '-' + username
+        self.__platforms[key] = self.aes.encrypt(password_generator())
 
     def load_vault(self):
         try:
@@ -55,9 +59,11 @@ class Vault:
         except Exception:
             pass
 
-    def delete_platform(self, platform_name):
-        """deletes a users platform"""
-        self.__platforms = {}
+    def delete_platform(self, platform_name, username):
+        """Delete a user's platform"""
+        key = platform_name + '-' + username
+        if key in self.__platforms:
+            del self.__platforms[key]
 
     def delete_all_platforms(self):
         """deletes all platforms"""

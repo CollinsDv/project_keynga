@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Platforms{% endblock %}
+
+{% block content %}
+<div class="platforms-section pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Platforms</h1>
+</div>
+<div class="content">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Platform</th>
+                <th>Username</th>
+                <th>Password</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for platform, encrypted_password in vault.items() %}
+                {% set platform_name, username = platform.split('-') %}
+                <tr>
+                    <td>{{ platform_name }}</td>
+                    <td>{{ username }}</td>
+                    <td>
+                        <input type="password" class="form-control" value="{{ encrypted_password }}" id="password_{{ loop.index }}" readonly>
+                        <button class="btn btn-outline-secondary" onclick="togglePasswordVisibility('password_{{ loop.index }}')">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                        <button class="btn btn-outline-secondary" onclick="copyToClipboard('password_{{ loop.index }}')">
+                            Copy
+                        </button>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<script>
+    function togglePasswordVisibility(passwordFieldId) {
+        var passwordField = document.getElementById(passwordFieldId);
+        if (passwordField.type === "password") {
+            passwordField.type = "text";
+        } else {
+            passwordField.type = "password";
+        }
+    }
+
+    function copyToClipboard(passwordFieldId) {
+        var passwordField = document.getElementById(passwordFieldId);
+        var tempInput = document.createElement("input");
+        document.body.appendChild(tempInput);
+        tempInput.value = passwordField.value;
+        tempInput.select();
+        document.execCommand("copy");
+        document.body.removeChild(tempInput);
+        alert("Password copied to clipboard!");
+    }
+
+</script>
+{% endblock %}

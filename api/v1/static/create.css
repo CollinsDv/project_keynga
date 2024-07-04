@@ -1,0 +1,45 @@
+/* Add this to create.css */
+body {
+    font-family: "Kanit", sans-serif;
+    font-weight: 300;
+    font-style: normal;
+}
+
+.create-section {
+    margin: 20px 0px 0px 60px;
+}
+
+.content {
+    margin: 60px 200px 0px 60px;
+}
+
+h2, h3 {
+    color: #333;
+    font-weight: 700; /* Emphasis on headers */
+}
+
+.table {
+    width: 100%;
+    margin-bottom: 1rem;
+    color: #212529;
+}
+
+.table th,
+.table td {
+    padding: 0.75rem;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6;
+}
+
+.table thead th {
+    vertical-align: bottom;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.table tbody + tbody {
+    border-top: 2px solid #dee2e6;
+}
+
+.table .table {
+    background-color: #fff;
+}

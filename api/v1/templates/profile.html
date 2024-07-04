@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<div class="profile-section pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Profile</h1>
+</div>
+<div class="content">
+    <p><strong>Name:</strong> {{ user.name }}</p>
+    <p><strong>User ID:</strong> {{ user.user_id }}</p>
+    <p><strong>Platforms:</strong></p>
+    <ul>
+        {% for platform in unique_platforms %}
+        <li>{{ platform }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

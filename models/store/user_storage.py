@@ -37,8 +37,7 @@ class UserStore(object):
                     store_dict[key] = obj.obj_dict()
                 json.dump(store_dict, file)
         except Exception as e:
-            print(e)
-            print('save method passed')
+            print(f"Error saving users: {e}")
 
     def load(self):
         from models.user import User
