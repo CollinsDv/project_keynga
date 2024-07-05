@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keynga - The King of Keys</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Kanit', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .header, .footer {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px 0;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 3em;
+        }
+        .header p {
+            margin: 5px 0;
+        }
+        .nav-links {
+            margin-top: 10px;
+        }
+        .nav-links a {
+            color: #ecf0f1;
+            margin: 0 10px;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .section {
+            padding: 60px 0;
+            text-align: center;
+        }
+        .section h2 {
+            margin-bottom: 20px;
+            font-size: 2.5em;
+            font-weight: 700;
+        }
+        .section p {
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        .features, .about {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .feature-item {
+            margin-bottom: 30px;
+        }
+        .contact {
+            text-align: center;
+        }
+        .contact a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        .contact a:hover {
+            text-decoration: underline;
+        }
+        .terms {
+            font-size: 0.8em;
+        }
+        .img-placeholder {
+            background-color: #ddd;
+            width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="container">
+        <h1>Keynga</h1>
+        <p>The King of Keys</p>
+        <div class="nav-links">
+            <a href="#features">Features</a>
+            <a href="#about">About</a>
+            <a href="https://github.com/CollinsDv/project_keynga">Project</a>
+        </div>
+    </div>
+</div>
+
+<div class="section">
+    <div class="container">
+        <p>A one type password manager and generator aiming at efficiently managing platform keys in a safe robust way</p>
+        <img src="static/example.png" alt="Key Image" class="img-fluid mx-auto d-block">
+        <p>Save the hassle of remembering tonnes of passwords for the various platforms, and save them in your personal vault, encrypted with modern day cipher algorithms, with ONE MASTER PASSWORD</p>
+    </div>
+</div>
+
+<div class="section features" id="features">
+    <div class="container">
+        <h2>Features</h2>
+        <div class="row feature-item">
+            <div class="col-md-6">
+                <img src="static/add and generate.png" alt="Feature 1" class="img-fluid">
+            </div>
+            <div class="col-md-6">
+                <h3>Secure Platform and Password Management</h3>
+                <p>Add Platforms along with their usernames and passwords. The passwords are encrypted and stored securely. Generate strong, random passwords for platforms, enhancing security. View and Copy Passwords stored in one’s vault, with the option to copy passwords to the clipboard for easy access.</p>
+            </div>
+        </div>
+        <div class="row feature-item">
+            <div class="col-md-6 order-md-2">
+                <img src="static/log in_1.png" alt="Feature 2" class="img-fluid">
+            </div>
+            <div class="col-md-6 order-md-1">
+                <h3>User Authentication and Profile Management</h3>
+                <p>Registration and Login with a username and master password, and subsequently log in securely. The master password is used to encrypt and decrypt user data. Profile Viewing: Users can view their profile information, including their unique user ID and the list of platforms they have added.</p>
+            </div>
+        </div>
+        <div class="row feature-item">
+            <div class="col-md-6">
+                <img src="static/platform.png" alt="Feature 3" class="img-fluid">
+            </div>
+            <div class="col-md-6">
+                <h3>Platform Management</h3>
+                <p>Manage Platforms by updating existing platform information, including changing passwords. Delete Platforms no longer in use, ensuring that old or unused accounts do not pose a security risk.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="section about" id="about">
+    <div class="container">
+        <h2>About Project</h2>
+        <p>A one type password manager and generator aiming at efficiently managing platform keys in a safe robust way.</p>
+        <p>I am a software engineer with a keen interest in cybersecurity. Building this software as my portfolio project at <a href="https://www.holbertonschool.com/" target="_blank">Holberton School</a> not only didn’t pave the way to apply what they taught me but also allowed me to go outside my comfort zone and seek solutions for my own. It was a fulfilling project and I wish to share my discovery with you. Below is the link to my GitHub where you can clone the repository and securely manage your passwords efficiently, as well as my socials:</p>
+        <div class="contact">
+            <p>LinkedIn: <a href="https://www.linkedin.com/in/collins-kimani/">https://www.linkedin.com/in/collins-kimani/</a></p>
+            <p>Twitter: <a href="https://x.com/lococodes">https://x.com/lococodes</a></p>
+            <p>GitHub: <a href="https://github.com/CollinsDv">https://github.com/CollinsDv</a></p>
+            <p>Project repository: <a href="https://github.com/CollinsDv/project_keynga">https://github.com/CollinsDv/project_keynga</a></p>
+        </div>
+    </div>
+</div>
+
+<div class="footer">
+    <div class="container">
+        <p class="terms">Terms and Conditions apply</p>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
