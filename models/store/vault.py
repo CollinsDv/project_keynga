@@ -1,20 +1,16 @@
 """module: models/platforms
 will generate user platforms and their crypted passwords
 """
-from models.generators import generate_login_hash, AESCipher, password_generator
+from models.generators import AESCipher, password_generator
 import json
 
 
 class Vault:
     """generate user's password only from file"""
-    # user_id = ''
-    # __platforms = {}
-    # file = ''
-
     def __init__(self, user_id, master_pass, salt):
         """initializing a users platform using his user id"""
         self.user_id = user_id
-        self.__platforms = {}  # Format: {'platform_name': 'encrypted_password'}
+        self.__platforms = {}  # Format:{'platform_name': 'encrypted_password'}
         self.file = f'{user_id}.json'
         self.aes = AESCipher(master_pass, salt)
 
@@ -32,12 +28,13 @@ class Vault:
         self.__platforms[key] = self.aes.encrypt(password_generator())
 
     def load_vault(self):
+        """load a user's vault"""
         try:
             with open(self.file, 'r', encoding='utf-8') as file:
                 self.__platforms = json.load(file)
         except Exception:
-            pass
-    
+            pass  # vault doesn't exist
+
     def get_vault(self):
         """get users platforms in dictionary"""
         return self.__platforms
@@ -68,18 +65,11 @@ class Vault:
     def delete_all_platforms(self):
         """deletes all platforms"""
         self.__platforms = {}
-    
+
     def number_of_platforms(self):
         """gets the number of platforms managed"""
         return len(self.__platforms)
-    
+
     def get_platforms(self):
         """returns the list of platforms"""
         return self.__platforms
-
-    # def verify_access(self, platform_name, password):
-    #     """Verify if the user has access to the given platform."""
-    #     if platform_name in self.platforms:
-    #         hashed_password = generate_login_hash(password)
-    #         return self.platforms[platform_name] == hashed_password
-    #     return False

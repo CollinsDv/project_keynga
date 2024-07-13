@@ -1,14 +1,18 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, ValidationError
+from wtforms import StringField, PasswordField, SubmitField, ValidationError
 from wtforms.validators import DataRequired, Length, EqualTo
 from models import user_store
-import json
+
 
 class RegistrationForm(FlaskForm):
-    username = StringField('Username', [Length(min=4, max=25)])
-    master_password = PasswordField('New Password', [
-        DataRequired(), EqualTo('confirm', message="Passwords must match")
-    ])
+    """creates registration form"""
+    username = StringField('Username',
+                           [Length(min=4, max=25)])
+    master_password = PasswordField('New Password',
+                                    [DataRequired(),
+                                     EqualTo('confirm',
+                                             message="Passwords must match")]
+                                    )
     confirm = PasswordField('Repeat Password')
     submit = SubmitField('Register')
     # accept_tos = BooleanField('I accept the TOS', [DataRequired()])

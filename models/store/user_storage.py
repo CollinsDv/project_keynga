@@ -14,7 +14,6 @@ class UserStore(object):
         """Add a new user to the store"""
         key = user.name + ':' + user.user_id
         self.__users[key] = user
-        print('add method passed')
 
     def user_exists(self, key):
         """Check if a user exists in the store."""
@@ -33,7 +32,6 @@ class UserStore(object):
         try:
             with open(self.file_store, 'w', encoding='utf-8') as file:
                 for key, obj in self.__users.items():
-                    # obj.hash_pw = obj.hash_pw.decode() if obj.hash_pw else None
                     store_dict[key] = obj.obj_dict()
                 json.dump(store_dict, file)
         except Exception as e:
@@ -42,14 +40,19 @@ class UserStore(object):
     def load(self):
         from models.user import User
         try:
-            with open(self.file_store, 'r', encoding='utf-8') as file:
-                loaded_dict = json.load(file)
-                for key, obj in loaded_dict.items():
-                    obj['hash_pw'] = obj['hash_pw'].encode() if obj['hash_pw'] else None
-                    self.__users[key] = User(**obj)
-                    print('load method passed')
+            if os.path.exists(self.file_store) and\
+                    os.path.getsize(self.file_store) > 0:
+                # file is not not empty
+                with open(self.file_store, 'r', encoding='utf-8') as file:
+                    loaded_dict = json.load(file)
+                    for key, obj in loaded_dict.items():
+                        obj['hash_pw'] = obj['hash_pw'].encode() \
+                            if obj['hash_pw'] else None
+                        self.__users[key] = User(**obj)
+            else:
+                print("users.json is empty or does not exist. Skipping load.")
         except Exception as e:
-            pass
+            print(f"Error loading users: {e}")
 
     def clear(self):
         """Clear the store"""

@@ -1,18 +1,21 @@
-import sys
-import os
-# Ensure the project root directory is in 'sys.path'
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
-
 from flask import Flask, render_template, url_for, flash, redirect, g, request
 from flask import get_flashed_messages
 from models.user import User
+from models.store.vault import Vault
 from models import user_store
 from api.v1.forms.register_form import RegistrationForm
 from api.v1.forms.login_form import LoginForm
 from api.v1.forms.manage_form import ManageForm
 from api.v1.forms.create_form import CreatePlatformForm, GeneratePasswordForm
 from wtforms import ValidationError
-from flask_login import LoginManager, login_user, logout_user, login_required, current_user
+from flask_login import LoginManager,\
+    login_user, logout_user, login_required, current_user
+from flask import session
+import sys
+import os
+# Ensure the project root directory is in 'sys.path'
+sys.path.append(os.path.abspath(
+    os.path.join(os.path.dirname(__file__), '../../')))
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'createatokenusingsecretpackage'
@@ -21,12 +24,26 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
+
 @login_manager.user_loader
 def load_user(user_id):
-    for user_key, user_obj in user_store.get_users().items():
+    """Tells Flask-login how to load users given an id
+
+    - it's a callback function called indirectly that generates an instance
+      of the current user stored in session
+    """
+    for user_obj in user_store.get_users().values():
         if user_obj.user_id == user_id:
+            print('user_obj found')
+            # Initialize the vault for the user if not already initialized
+            if not user_obj.vault and 'master_pass' in session:
+                user_obj.vault = Vault(
+                    user_obj.user_id, session['master_pass'], user_obj.salt)
+                user_obj.vault.load_vault()
             return user_obj
+    print('user_obj not found')
     return None
+
 
 @app.route('/register/', methods=['GET', 'POST'])
 def register():
@@ -34,7 +51,8 @@ def register():
     if form.validate_on_submit():
         try:
             if form.validate_username(form.username):
-                user = User(name=form.username.data, master_pass=form.master_password.data)
+                user = User(name=form.username.data,
+                            master_pass=form.master_password.data)
                 user_store.load()
                 user.add()
                 user_store.save()
@@ -48,13 +66,16 @@ def register():
                 flash(err, 'danger')
     return render_template('register.html', form=form)
 
+
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
     if request.method == 'POST' and form.validate_on_submit():
         try:
-            if form.validate_user(form):
-                user = next(user for user in user_store.get_users().values() if user.name == form.username.data)
+            user = form.validate_user(form)
+            if user:
+                user = User(**user)
+                session['master_pass'] = form.master_password.data
                 login_user(user)
                 flash('Login Successful', 'success')
                 return redirect(url_for('home'))
@@ -64,13 +85,21 @@ def login():
             flash(str(e), 'danger')
     return render_template('login.html', form=form)
 
+
 @app.route('/profile')
 @login_required
 def profile():
     user = current_user
+    if not hasattr(user, 'vault'):
+        flash('Vault not initialized', 'danger')
+        return redirect(url_for('login'))
     decrypted_vault = user.vault.decrypt()
-    unique_platforms = list(set(platform.split('-')[0] for platform in decrypted_vault.keys()))
-    return render_template('profile.html', user=user, vault=decrypted_vault, unique_platforms=unique_platforms)
+    unique_platforms = list(
+        set(platform.split('-')[0]
+            for platform in decrypted_vault.keys()))
+    return render_template('profile.html', user=user,
+                           vault=decrypted_vault,
+                           unique_platforms=unique_platforms)
 
 
 @app.route('/home')
@@ -79,20 +108,26 @@ def home():
     user = current_user
     return render_template('home.html', user=user)
 
+
 @app.route('/dropsession')
 def dropsession():
+    session.pop('master_pass', None)
     clear_flashes()
-    flash("You have been logged out.", "info")
+    current_user.authenticated = False
     logout_user()
+    flash("You have been logged out.", "info")
     return redirect(url_for('login'))
+
 
 def clear_flashes():
     # Retrieve and discard all flash messages
     get_flashed_messages()
 
+
 @app.before_request
 def before_request():
     g.user = current_user
+
 
 @app.route('/create', methods=['GET', 'POST'])
 @login_required
@@ -101,11 +136,13 @@ def create():
     gen_form = GeneratePasswordForm()
     if form.validate_on_submit():
         user = current_user
-        user.vault.add_platform(form.platform_name.data, form.username.data, form.password.data)
+        user.vault.add_platform(form.platform_name.data,
+                                form.username.data, form.password.data)
         user.vault.save_platforms()
         flash('Platform added successfully', 'success')
         return redirect(url_for('create'))
     return render_template('create.html', form=form, gen_form=gen_form)
+
 
 @app.route('/generate_password', methods=['POST'])
 @login_required
@@ -113,10 +150,12 @@ def generate_password():
     gen_form = GeneratePasswordForm()
     if gen_form.validate_on_submit():
         user = current_user
-        user.vault.generate_password(gen_form.platform_name.data, gen_form.username.data)
+        user.vault.generate_password(
+            gen_form.platform_name.data, gen_form.username.data)
         user.vault.save_platforms()
         flash('Password generated successfully', 'success')
     return redirect(url_for('create'))
+
 
 @app.route('/platforms')
 @login_required
@@ -125,6 +164,7 @@ def platforms():
     decrypted_vault = user.vault.decrypt()
     return render_template('platforms.html', vault=decrypted_vault)
 
+
 @app.route('/manage', methods=['GET', 'POST'])
 @login_required
 def manage():
@@ -132,11 +172,13 @@ def manage():
     user = current_user
     decrypted_vault = user.vault.decrypt()
     if form.validate_on_submit():
-        user.vault.add_platform(form.platform_name.data, form.username.data, form.password.data)
+        user.vault.add_platform(
+            form.platform_name.data, form.username.data, form.password.data)
         user.vault.save_platforms()
         flash('Platform updated successfully', 'success')
         return redirect(url_for('manage'))
     return render_template('manage.html', form=form, vault=decrypted_vault)
+
 
 @app.route('/delete_platform', methods=['POST'])
 @login_required
@@ -148,6 +190,7 @@ def delete_platform():
     user.vault.save_platforms()
     flash('Platform deleted successfully', 'success')
     return redirect(url_for('manage'))
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)

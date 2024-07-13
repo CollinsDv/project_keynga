@@ -38,9 +38,9 @@ class TesTCompleteSystem(unittest.TestCase):
             self.assertIn(att, self.user2.vault.__dict__)
 
     def test_add_save_platform(self):
-        user_platforms = {'Gmail': 'google1', 'Netflix': '324-342'}
-        self.user1.vault.add_platform('Gmail', user_platforms['Gmail'])
-        self.user1.vault.add_platform('Netflix', user_platforms['Netflix'])
+        user_platforms = [('Gmail', 'collins', 'google1'), ('Netflix', 'collins', '324-342')]
+        for platform in user_platforms:
+            self.user1.vault.add_platform(platform[0], platform[1], platform[2])
 
         self.assertTrue(self.user1.vault.number_of_platforms() == 2)
         self.user1.vault.save_platforms()
@@ -50,7 +50,7 @@ class TesTCompleteSystem(unittest.TestCase):
              new_user1_dict = json.load(file)
         
         self.assertDictEqual(new_user1_dict, self.user1.vault.get_platforms())
-        for platform in ['Gmail', 'Netflix']:
+        for platform in ['Gmail-collins', 'Netflix-collins']:
             self.assertIn(platform, self.user1.vault.get_platforms())
 
 if __name__ == '__main__':

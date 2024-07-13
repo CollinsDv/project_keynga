@@ -25,6 +25,7 @@ def generate_login_hash(password):
 
     return hashed
 
+
 def verify_password(user_pass, hash):
     """used to verify a user on login"""
     encoded = base64.b64encode(hashlib.sha256(user_pass.encode()).digest())

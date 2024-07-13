@@ -4,10 +4,19 @@ from wtforms.validators import DataRequired, Length
 from models import user_store
 from models.generators.hash_generator import verify_password
 import json
+from models.store.vault import Vault
+
 
 class LoginForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired(), Length(min=4, max=25)], render_kw={"placeholder": "Username"})
-    master_password = PasswordField('Master_Password', validators=[DataRequired()], render_kw={"placeholder": "Master Password"})
+    """generates a login form"""
+    username = StringField('Username',
+                           validators=[DataRequired(), Length(min=4, max=25)],
+                           render_kw={"placeholder": "Username"})
+    master_password = PasswordField('Master_Password',
+                                    validators=[DataRequired()],
+                                    render_kw={
+                                        "placeholder": "Master Password"
+                                        })
     submit = SubmitField('Login')
 
     def validate_user(self, form):
@@ -26,17 +35,14 @@ class LoginForm(FlaskForm):
         else:
             for user in users.values():
                 if user['name'] == form.username.data:
-                    print(f"User found: {user['name']}")
-                    if verify_password(form.master_password.data, user['hash_pw']):
-                        print("Password is correct")
-                        user_key = f"{user['name']}:{user['user_id']}"
-                        print(f"User key: {user_key}")
-                        if user_key in user_store.get_users():
-                            return user_store.get_users()[user_key]
-                        else:
-                            print(f"User key {user_key} not found in user store.")
-                            return None
+                    if verify_password(form.master_password.data,
+                                       user['hash_pw']):
+                        user['hash_pw'] = user['hash_pw'].encode()
+                        user['authenticated'] = True  # for flask login
+                        user['vault'] = Vault(user['user_id'],
+                                              form.master_password.data,
+                                              user['salt'])
+                        return user
                     else:
-                        print("Password is incorrect")
-        print("User not found or password incorrect")
-        return None
+                        return None  # incorrect password
+        return None  # Unavailable user

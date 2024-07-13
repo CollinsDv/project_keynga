@@ -5,7 +5,7 @@ class TestPasswordGenerator(unittest.TestCase):
     def test_password_length(self):
         """Test that the generated password meets the expected length"""
         password = password_generator()
-        self.assertEqual(len(password), 10, "Generated password should be 12 characters long")
+        self.assertEqual(len(password), 10, "Generated password should be 10 characters long")
 
     def test_password_complexity(self):
         """Test that the generated password contains a mix of character types"""

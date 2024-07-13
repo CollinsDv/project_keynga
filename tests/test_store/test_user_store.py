@@ -31,17 +31,15 @@ class TestStore(unittest.TestCase):
     def test_user_details(self):
         """Tests membership"""
         self.user1.add()
-        key_contents = ['name', 'master_pass', 'date_joined', 'date_updated', 'hash_pw']
+        key_contents = ['name', 'date_joined', 'date_updated',
+                        'hash_pw', 'salt', 'user_id']
         for elem in key_contents:
             self.assertIn(elem, self.user1.obj_dict())
-        print('test_user_details successful')
     
     def test_save(self):
         """Testing save method"""
         self.user1.add()
         self.user2.add()
-        users = user_store.get()
-        print(users)
         user_store.save()
         self.assertTrue(os.path.exists(user_store.file_store))
         print('path exists')
@@ -50,6 +48,8 @@ class TestStore(unittest.TestCase):
             with open(user_store.file_store, 'r', encoding='utf-8') as file:
                 obj_dict = json.load(file)
                 for key, obj in obj_dict.items():
+                    obj['hash_pw'] = obj['hash_pw'].encode() \
+                            if obj['hash_pw'] else None
                     users_dict[key] = User(**obj)
         except Exception as e:
             raise e
@@ -68,7 +68,7 @@ class TestStore(unittest.TestCase):
         user_store.save()
         user_store.load()
 
-        users = user_store.get()
+        users = user_store.get_users()
         self.assertIsInstance(users, dict)
         self.assertEqual(2, user_store.get_user_count())
 

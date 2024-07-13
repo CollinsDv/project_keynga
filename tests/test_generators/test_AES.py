@@ -1,11 +1,14 @@
 import unittest
 from models.generators.AES_cipher import AESCipher
+import bcrypt
+
 
 class TestAESCipher(unittest.TestCase):
     def setUp(self):
         # Initialize AESCipher with a test key
         self.key = "test_key"
-        self.cipher = AESCipher(self.key)
+        self.salt = str(bcrypt.gensalt())
+        self.cipher = AESCipher(self.key, self.salt)
 
     def test_encrypt_decrypt(self):
         # Test that encryption and decryption work as expected

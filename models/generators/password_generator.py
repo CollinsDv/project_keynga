@@ -24,7 +24,7 @@ def password_generator():
     '''
     loop until the password has a minimum of 1 special character and a
     minimum of 2 digits
-    ''' 
+    '''
     while True:
         password = ''
         for i in range(password_len):

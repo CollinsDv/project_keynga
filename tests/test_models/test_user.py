@@ -10,10 +10,10 @@ import hashlib
 class TestUser(unittest.TestCase):
     """test user mode"""
     def setUp(self) -> None:
-        deets1 = {'name':'Collins', 'master_pass':'password1', 'user_id':'32545-53535-53535'}
-        deets2 = {'name':'Kush', 'master_pass':'password2'}
-        self.User1 = User(**deets1)
-        self.User2 = User(**deets2)
+        self.deets1 = {'name':'Collins', 'master_pass':'password1', 'user_id':'32545-53535-53535'}
+        self.deets2 = {'name':'Kush', 'master_pass':'password2'}
+        self.User1 = User(**self.deets1)
+        self.User2 = User(**self.deets2)
 
     def test_object_types(self):
         """used to test the users types"""
@@ -53,15 +53,20 @@ class TestUser(unittest.TestCase):
 
     def test_user_password_hash(self):
         """Test if the password hash matches the expected hash"""
-        for user in [self.User1, self.User2]:
-            raw_password = user.master_pass.encode('utf-8')
-            sha_pw = hashlib.sha256(raw_password).digest()
-            encoded = base64.b64encode(sha_pw)
-            self.assertTrue(bcrypt.checkpw(encoded, generate_login_hash(user.master_pass)))
+        # user1
+        raw_password = self.deets1['master_pass'].encode('utf-8')
+        sha_pw = hashlib.sha256(raw_password).digest()
+        encoded = base64.b64encode(sha_pw)
+        self.assertTrue(bcrypt.checkpw(encoded, generate_login_hash(self.deets1['master_pass'])))
+        # user2
+        raw_password = self.deets2['master_pass'].encode('utf-8')
+        sha_pw = hashlib.sha256(raw_password).digest()
+        encoded = base64.b64encode(sha_pw)
+        self.assertTrue(bcrypt.checkpw(encoded, generate_login_hash(self.deets2['master_pass'])))
 
     def test_invalid_password(self):
         """Test with an invalid password"""
-        self.assertFalse(bcrypt.checkpw(b"wrongpassword", generate_login_hash(self.User1.master_pass)))
+        self.assertFalse(bcrypt.checkpw(b"wrongpassword", generate_login_hash(self.deets1['master_pass'])))
 
     def test_vault_exists(self):
         """checking vault existence"""
