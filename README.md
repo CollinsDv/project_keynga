@@ -51,5 +51,7 @@ Contributions are welcome! Please feel free to submit a pull request or open an 
 
 - **Project Blog** - [Blog Post](https://mwas9446ck7.wixsite.com/collins-folio/post/building-a-password-manager-platform-for-my-school-project)
 
+- **Project Demo** - [Video](https://youtu.be/E-qfXg7oDoI)
+
 ### License
 This project is licensed under the MIT License - see the LICENSE file for details.
