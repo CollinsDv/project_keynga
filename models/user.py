@@ -48,6 +48,11 @@ class User:
 
             if not kwargs.get('salt'):
                 self.salt = str(bcrypt.gensalt())
+            
+            if not kwargs.get('authenticated'):
+                self.authenticated = False
+            else:
+                self.authenticated = kwargs.get('authenticated')
 
             # Initialize the vault only if master_pass is provided
             if kwargs.get('master_pass'):
@@ -98,7 +103,7 @@ class User:
     # Methods required by Flask-Login
     @property
     def is_authenticated(self):
-        return self.authenticated
+        return getattr(self, 'authenticated', False)
 
     @property
     def is_active(self):

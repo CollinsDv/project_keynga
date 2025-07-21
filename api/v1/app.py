@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, flash, redirect, g, request
+from flask import Flask, render_template, url_for, flash, redirect, g, request, session, send_from_directory
 from flask import get_flashed_messages
 from models.user import User
 from models.store.vault import Vault
@@ -10,7 +10,6 @@ from api.v1.forms.create_form import CreatePlatformForm, GeneratePasswordForm
 from wtforms import ValidationError
 from flask_login import LoginManager,\
     login_user, logout_user, login_required, current_user
-from flask import session
 import sys
 import os
 # Ensure the project root directory is in 'sys.path'
@@ -34,7 +33,6 @@ def load_user(user_id):
     """
     for user_obj in user_store.get_users().values():
         if user_obj.user_id == user_id:
-            print('user_obj found')
             # Initialize the vault for the user if not already initialized
             if not user_obj.vault and 'master_pass' in session:
                 user_obj.vault = Vault(
@@ -44,6 +42,11 @@ def load_user(user_id):
     print('user_obj not found')
     return None
 
+@app.route('/')
+@app.route('/index')
+def index():
+    """Renders the index page"""
+    return render_template('index.html')
 
 @app.route('/register/', methods=['GET', 'POST'])
 def register():
@@ -76,6 +79,7 @@ def login():
             if user:
                 user = User(**user)
                 session['master_pass'] = form.master_password.data
+                user_store.add(user)
                 login_user(user)
                 flash('Login Successful', 'success')
                 return redirect(url_for('home'))
@@ -113,7 +117,8 @@ def home():
 def dropsession():
     session.pop('master_pass', None)
     clear_flashes()
-    current_user.authenticated = False
+    user = current_user
+    user.authenticated = False
     logout_user()
     flash("You have been logged out.", "info")
     return redirect(url_for('login'))

@@ -1,7 +1,6 @@
 # python3
 # hashlib
 flask
-pycrypto
 bcrypt
 pycryptodome
 Flask-WTF
